@@ -25,13 +25,13 @@ int main() {
 	
 	bsmlib::Data my_data;
 
-	my_data.SetInt("my_int", 2022);
-	my_data.SetFloat("my_float", 3.14159f);
-	my_data.SetString("my_string", "Hello, world!");
-	my_data.SetRaw("my_raw", data_bytes);
+	my_data.SetInt    ("my_int", 2022);
+	my_data.SetFloat  ("my_float", 3.14159f);
+	my_data.SetString ("my_string", "Hello, world!");
+	my_data.SetRaw    ("my_raw", data_bytes);
 
-	std::cout << "Int:        " << my_data.GetInt	("my_int") 	<< std::endl;
-	std::cout << "Float:      " << my_data.GetFloat	("my_float") 	<< std::endl;
+	std::cout << "Int:        " << my_data.GetInt("my_int") 	<< std::endl;
+	std::cout << "Float:      " << my_data.GetFloat("my_float") 	<< std::endl;
 	std::cout << "String:     " << my_data.GetString("my_string") 	<< std::endl;
 	std::cout << "Raw (size): " << my_data.GetRaw("my_raw").size()	<< std::endl;
 	
