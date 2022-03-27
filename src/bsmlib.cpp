@@ -243,15 +243,15 @@ bool bsmlib::Data::Save(std::string fname) {
 
             dataregion.insert(dataregion.end(), key.value_string.begin(), key.value_string.end());
         }
-
-        // Write bytes
-        file.open(fname, std::ios::out | std::ios::binary);
-
-        file.write((char *)&tableregion[0], tableregion.size());
-        if(dataregion.size() != 0) file.write((char *)&dataregion[0], dataregion.size());
-
-        file.close();
     }
+
+    // Write bytes
+    file.open(fname, std::ios::out | std::ios::binary);
+
+    file.write((char *)&tableregion[0], tableregion.size());
+    file.write((char *)&dataregion[0], dataregion.size());
+
+    file.close();
 
     return true;
 }
