@@ -13,7 +13,7 @@ Supported types:
 |--|--|
 |Keys|255|
 |Keyname|16
-|Data region|65536 (Accumulatively)
+|Data region|131072 (128kb)
 ## Using with C++
 After including the library with `#include <bsmlib.hpp>`, access all the bsmlib functions in the `bsmlib` namespace through the `bsmlib::Data` class.
 ### Setting and getting keys
