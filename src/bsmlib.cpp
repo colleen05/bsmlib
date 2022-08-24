@@ -150,7 +150,7 @@ bool bsmlib::Data::Load(std::string fname) {
                 (filedata[i + 17 + 3] << 24)
             );
                 
-            std::cout << "INFO: BSM: [" << fname << "] Key (Int)    \"" << keyname << "\": " << GetInt(keyname)<< "\n";
+            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Int)    \"" << keyname << "\": " << GetInt(keyname)<< "\n";
         } else if(vtype == BSM_KEYTYPE_FLOAT) {
             float value = 0.0f;
 
@@ -164,7 +164,7 @@ bool bsmlib::Data::Load(std::string fname) {
 
             SetFloat(keyname, value);
 
-            std::cout << "INFO: BSM: [" << fname << "] Key (Float)  \"" << keyname << "\": " << GetFloat(keyname)<< "\n";
+            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Float)  \"" << keyname << "\": " << GetFloat(keyname)<< "\n";
         } else if(vtype == BSM_KEYTYPE_STRING) {
             int data_offset = (filedata[i + 17 + 0]) + (filedata[i + 17 + 1] << 8);
             int data_size   = (filedata[i + 17 + 2]) + (filedata[i + 17 + 3] << 8);
@@ -174,7 +174,7 @@ bool bsmlib::Data::Load(std::string fname) {
                 filedata.begin() + data_region_start + data_offset + data_size
             ));
 
-            std::cout << "INFO: BSM: [" << fname << "] Key (String) \"" << keyname << "\": \"" << GetString(keyname) << "\"\n";
+            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (String) \"" << keyname << "\": \"" << GetString(keyname) << "\"\n";
         } else if(vtype == BSM_KEYTYPE_RAW) {
             int data_offset = (filedata[i + 17 + 0]) + (filedata[i + 17 + 1] << 8);
             int data_size   = (filedata[i + 17 + 2]) + (filedata[i + 17 + 3] << 8);
@@ -184,7 +184,7 @@ bool bsmlib::Data::Load(std::string fname) {
                 filedata.begin() + data_region_start + data_offset + data_size
             ));
 
-            std::cout << "INFO: BSM: [" << fname << "] Key (Raw)    \"" << keyname << "\": " << data_size<< " Bytes \n";
+            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Raw)    \"" << keyname << "\": " << data_size<< " Bytes \n";
         }
     }
 
@@ -256,12 +256,10 @@ bool bsmlib::Data::Save(std::string fname) {
     return true;
 }
 
-bsmlib::Data::Data(std::string fname) {
-    keys = std::map<std::string, Key>();
-
-    Load(fname);
-}
-
 bsmlib::Data::Data() {
     keys = std::map<std::string, Key>();
+}
+
+bsmlib::Data::Data(std::string fname) : Data(){
+    Load(fname);
 }

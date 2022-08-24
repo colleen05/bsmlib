@@ -1,11 +1,14 @@
 #pragma once
 
+#include <algorithm>
+#include <iterator>
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <stdint.h>
 #include <fstream>
+#include <cstring>
 
 /*
 BSM File structure
@@ -64,7 +67,7 @@ namespace bsmlib {
             bool Load(std::string fname);
             bool Save(std::string fname);
 
-            Data(std::string fname);
             Data();
+            Data(std::string fname);
     };
 }
