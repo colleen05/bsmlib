@@ -41,6 +41,8 @@ int main() {
 }
 ```
 You may also use the `Get*(std::string keyname)` functions across different types. Using `GetString()` on an integer key will return the result of `std::to_string()` on that key's integer value.
+
+**NOTE:** The raw bytes returned from `GetRaw()` on non-raw keys may not be in the same order as stored in files depending on your system. Usage of `GetRaw()` on non-raw keys is discouraged.
 ### Saving and loading files
 Use `bsmlib::Data::Save(std::string filename)` to save to a file.
 ```c++
