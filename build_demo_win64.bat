@@ -1,0 +1,1 @@
+g++ -o demo/bin/demo.exe demo/src/Main.cpp src/bsmlib.cpp -Iinclude -std=c++17
