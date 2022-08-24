@@ -17,32 +17,49 @@ void bsmlib::Data::SetKey(std::string keyname, Key key) {
 }
 
 void bsmlib::Data::SetInt(std::string keyname, int value) {
+    std::vector<uint8_t> dataBytes;
+
+    dataBytes.push_back((value >> 24) & 0xFF);
+    dataBytes.push_back((value >> 16) & 0xFF);
+    dataBytes.push_back((value >>  8) & 0xFF);
+    dataBytes.push_back((value >>  0) & 0xFF);
+
     SetKey(keyname, Key {
         KeyType::Integer,
-        "",
+        std::to_string(value),
         value,
-        0.0f,
-        std::vector<uint8_t>()
+        (float) value,
+        dataBytes
     });
 }
 
 void bsmlib::Data::SetFloat(std::string keyname, float value) {
+    std::vector<uint8_t> dataBytes;
+    uint32_t vint = *(uint32_t*)&value;
+
+    dataBytes.push_back((vint >> 24) & 0xFF);
+    dataBytes.push_back((vint >> 16) & 0xFF);
+    dataBytes.push_back((vint >>  8) & 0xFF);
+    dataBytes.push_back((vint >>  0) & 0xFF);
+
     SetKey(keyname, Key {
         KeyType::Float,
-        "",
-        0,
+        std::to_string(value),
+        (int) value,
         value,
-        std::vector<uint8_t>()
+        dataBytes
     });
 }
 
 void bsmlib::Data::SetString(std::string keyname, std::string value) {
+    const char* strptr = value.c_str();
+
     SetKey(keyname, Key {
         KeyType::String,
         value,
-        0,
-        0.0f,
-        std::vector<uint8_t>()
+        std::atoi(strptr),
+        (float)std::atof(strptr),
+        std::vector<uint8_t>(value.begin(), value.end())
     });
 }
 
@@ -67,41 +84,24 @@ bsmlib::Key bsmlib::Data::GetKey(std::string keyname) {
 }
 
 int bsmlib::Data::GetInt(std::string keyname) {
-    if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == KeyType::Integer) {
-            return keys[keyname].value_int;
-        }
-    }
+    if(keys.count(keyname) > 0) return keys[keyname].value_int;
 
     return 0;
 }
 
 float bsmlib::Data::GetFloat(std::string keyname) {
-    if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == KeyType::Float) {
-            return keys[keyname].value_float;
-        }
-    }
+    if(keys.count(keyname) > 0) return keys[keyname].value_float;
 
     return 0.0f;
 }
 
 std::string bsmlib::Data::GetString(std::string keyname) {
-    if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == KeyType::String) {
-            return keys[keyname].value_string;
-        }
-    }
-
+    if(keys.count(keyname) > 0) return keys[keyname].value_string;
     return "";
 }
 
 std::vector<uint8_t> bsmlib::Data::GetRaw(std::string keyname) {
-    if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == KeyType::Raw) {
-            return keys[keyname].data;
-        }
-    }
+    if(keys.count(keyname) > 0) return keys[keyname].data;
 
     return std::vector<uint8_t>();
 }
@@ -164,7 +164,7 @@ bool bsmlib::Data::Load(std::string fname, bool clearFirst) {
                 (filedata[i + 17 + 2] << 16) +
                 (filedata[i + 17 + 3] << 24) ;
 
-            memcpy(&value, &valbytes, 4);
+            std::memcpy(&value, &valbytes, 4);
 
             SetFloat(keyname, value);
         } else if(vtype == KeyType::String) {
@@ -226,7 +226,7 @@ bool bsmlib::Data::Save(std::string fname) {
         }else if(key.type == KeyType::Float) {
             uint32_t valbytes;
 
-            memcpy(&valbytes, &key.value_float, 4);
+            std::memcpy(&valbytes, &key.value_float, 4);
 
             tableregion.push_back((uint8_t)((valbytes & 0x000000FF) >> 0));
             tableregion.push_back((uint8_t)((valbytes & 0x0000FF00) >> 8));

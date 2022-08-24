@@ -4,7 +4,7 @@ To include this library, add files from the `include` directory to your include 
 To compile as a static library, check the documentation for your compiler (such as [here](https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html) for GCC).
 ## File specifications
 Supported types:
- - Integers (32-bit)
+ - Integers (signed 32-bit)
  - Floats
  - Strings
  - Raw data
@@ -38,6 +38,7 @@ int main() {
 	return 0;
 }
 ```
+You may also use the `Get*(std::string keyname)` functions across different types. Using `GetString()` on an integer key will return the result of `std::to_string()` on that key's integer value.
 ### Saving and loading files
 Use `bsmlib::Data::Save(std::string filename)` to save to a file.
 ```c++
