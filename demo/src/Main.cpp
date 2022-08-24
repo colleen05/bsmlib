@@ -33,16 +33,16 @@ int main() {
         auto &keyvalue = p.second;
 
         switch(keyvalue.type) {
-            case bsmlib::KeyType::BSM_KEYTYPE_INT:
+            case bsmlib::KeyType::Integer:
                 std::cout << "FOUND: (int) test.bsm::" << keyname << " = " << std::to_string(keyvalue.value_int) << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_FLOAT:
+            case bsmlib::KeyType::Float:
                 std::cout << "FOUND: (float) test.bsm::" << keyname << " = " << std::to_string(keyvalue.value_float) << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_STRING:
+            case bsmlib::KeyType::String:
                 std::cout << "FOUND: (string) test.bsm::" << keyname << " = " << keyvalue.value_string << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_RAW:
+            case bsmlib::KeyType::Raw:
                 std::cout << "FOUND: (raw) test.bsm::" << keyname << " = " << std::to_string(keyvalue.data.size()) << " bytes." << std::endl;
                 break;
         }
@@ -63,7 +63,52 @@ int main() {
         free(s);
     }
 
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
+
+    // Test cross-type value fetching
+    bsmlib::Data data2;
+    
+    data2.SetInt("test_int", 1234);
+    data2.SetFloat("test_float", 3.1415f);
+    data2.SetString("test_string", "Hello, world!");
+    data2.SetRaw("test_raw", {0x00, 0x01, 0x01, 0x02, 0x03, 0x05, 0x08, 0x0D});
+
+    std::cout << "--- Cross-type value fetching ---" << std::endl;
+
+    for(auto &p : data2.keys) {
+        auto &keyname = p.first;
+        auto &keyvalue = p.second;
+
+        switch(keyvalue.type) {
+            case bsmlib::KeyType::Integer:
+                std::cout << "(int) " << keyname << ":" << std::endl;
+                break;
+            case bsmlib::KeyType::Float:
+                std::cout << "(float) " << keyname << ":" << std::endl;
+                break;
+            case bsmlib::KeyType::String:
+                std::cout << "(string) " << keyname << ":" << std::endl;
+                break;
+            case bsmlib::KeyType::Raw:
+                std::cout << "(raw) " << keyname << ":" << std::endl;
+                break;
+        }
+
+        std::cout << "\tInteger: " << data2.GetInt(keyname) << std::endl;
+        std::cout << "\tFloat:   " << data2.GetFloat(keyname) << std::endl;
+        std::cout << "\tString:  " << data2.GetString(keyname) << std::endl;
+        std::cout << "\tRaw:     ";
+
+        auto d2rawdata = data2.GetRaw(keyname);
+        for(auto &b : d2rawdata) {
+            auto *s = (char *)malloc(5);
+            sprintf(s, "0x%02X ", b);
+            std::cout << s;
+            free(s);
+        }
+
+        std::cout << std::endl;
+    }
 
     return 0;
 }
