@@ -1,4 +1,4 @@
-.vscode/
+.vscode/*
 
 demo/bin/*
 !demo/bin/.gitkeep
