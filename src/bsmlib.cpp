@@ -18,7 +18,7 @@ void bsmlib::Data::SetKey(std::string keyname, Key key) {
 
 void bsmlib::Data::SetInt(std::string keyname, int value) {
     SetKey(keyname, Key {
-        BSM_KEYTYPE_INT,
+        KeyType::Integer,
         "",
         value,
         0.0f,
@@ -28,7 +28,7 @@ void bsmlib::Data::SetInt(std::string keyname, int value) {
 
 void bsmlib::Data::SetFloat(std::string keyname, float value) {
     SetKey(keyname, Key {
-        BSM_KEYTYPE_FLOAT,
+        KeyType::Float,
         "",
         0,
         value,
@@ -38,7 +38,7 @@ void bsmlib::Data::SetFloat(std::string keyname, float value) {
 
 void bsmlib::Data::SetString(std::string keyname, std::string value) {
     SetKey(keyname, Key {
-        BSM_KEYTYPE_STRING,
+        KeyType::String,
         value,
         0,
         0.0f,
@@ -48,7 +48,7 @@ void bsmlib::Data::SetString(std::string keyname, std::string value) {
 
 void bsmlib::Data::SetRaw(std::string keyname, std::vector<uint8_t> data) {
     SetKey(keyname, Key {
-        BSM_KEYTYPE_RAW,
+        KeyType::Raw,
         "",
         0,
         0.0f,
@@ -58,7 +58,7 @@ void bsmlib::Data::SetRaw(std::string keyname, std::vector<uint8_t> data) {
 
 bsmlib::Key bsmlib::Data::GetKey(std::string keyname) {
     return (keys.count(keyname) > 0) ? keys[keyname] : Key {
-        BSM_KEYTYPE_NULL,
+        KeyType::Null,
         "",
         0,
         0.0f,
@@ -68,7 +68,7 @@ bsmlib::Key bsmlib::Data::GetKey(std::string keyname) {
 
 int bsmlib::Data::GetInt(std::string keyname) {
     if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == BSM_KEYTYPE_INT) {
+        if(keys[keyname].type == KeyType::Integer) {
             return keys[keyname].value_int;
         }
     }
@@ -78,7 +78,7 @@ int bsmlib::Data::GetInt(std::string keyname) {
 
 float bsmlib::Data::GetFloat(std::string keyname) {
     if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == BSM_KEYTYPE_FLOAT) {
+        if(keys[keyname].type == KeyType::Float) {
             return keys[keyname].value_float;
         }
     }
@@ -88,7 +88,7 @@ float bsmlib::Data::GetFloat(std::string keyname) {
 
 std::string bsmlib::Data::GetString(std::string keyname) {
     if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == BSM_KEYTYPE_STRING) {
+        if(keys[keyname].type == KeyType::String) {
             return keys[keyname].value_string;
         }
     }
@@ -98,7 +98,7 @@ std::string bsmlib::Data::GetString(std::string keyname) {
 
 std::vector<uint8_t> bsmlib::Data::GetRaw(std::string keyname) {
     if(keys.count(keyname) > 0) {
-        if(keys[keyname].type == BSM_KEYTYPE_RAW) {
+        if(keys[keyname].type == KeyType::Raw) {
             return keys[keyname].data;
         }
     }
@@ -148,16 +148,14 @@ bool bsmlib::Data::Load(std::string fname, bool clearFirst) {
 
         keyname.erase(std::find(keyname.begin(), keyname.end(), '\0'), keyname.end());
 
-        if(vtype == BSM_KEYTYPE_INT) {
+        if(vtype == KeyType::Integer) {
             SetInt(keyname,
                 (filedata[i + 17 + 0] << 0)  +
                 (filedata[i + 17 + 1] << 8)  +
                 (filedata[i + 17 + 2] << 16) +
                 (filedata[i + 17 + 3] << 24)
             );
-                
-            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Int)    \"" << keyname << "\": " << GetInt(keyname)<< "\n";
-        } else if(vtype == BSM_KEYTYPE_FLOAT) {
+        } else if(vtype == KeyType::Float) {
             float value = 0.0f;
 
             uint32_t valbytes =
@@ -169,28 +167,30 @@ bool bsmlib::Data::Load(std::string fname, bool clearFirst) {
             memcpy(&value, &valbytes, 4);
 
             SetFloat(keyname, value);
-
-            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Float)  \"" << keyname << "\": " << GetFloat(keyname)<< "\n";
-        } else if(vtype == BSM_KEYTYPE_STRING) {
+        } else if(vtype == KeyType::String) {
             int data_offset = (filedata[i + 17 + 0]) + (filedata[i + 17 + 1] << 8);
             int data_size   = (filedata[i + 17 + 2]) + (filedata[i + 17 + 3] << 8);
 
-            SetString(keyname, std::string (
-                filedata.begin() + data_region_start + data_offset,
-                filedata.begin() + data_region_start + data_offset + data_size
-            ));
-
-            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (String) \"" << keyname << "\": \"" << GetString(keyname) << "\"\n";
-        } else if(vtype == BSM_KEYTYPE_RAW) {
+            if(data_offset + data_size < filedata.size()) {
+                SetString(keyname, std::string (
+                    filedata.begin() + data_region_start + data_offset,
+                    filedata.begin() + data_region_start + data_offset + data_size
+                ));
+            }else {
+                return false;
+            }
+        } else if(vtype == KeyType::Raw) {
             int data_offset = (filedata[i + 17 + 0]) + (filedata[i + 17 + 1] << 8);
             int data_size   = (filedata[i + 17 + 2]) + (filedata[i + 17 + 3] << 8);
 
-            SetRaw(keyname, std::vector<uint8_t> (
-                filedata.begin() + data_region_start + data_offset,
-                filedata.begin() + data_region_start + data_offset + data_size
-            ));
-
-            // LOG: std::cout << "INFO: BSM: [" << fname << "] Key (Raw)    \"" << keyname << "\": " << data_size<< " Bytes \n";
+            if(data_offset + data_size < filedata.size()) {
+                SetRaw(keyname, std::vector<uint8_t> (
+                    filedata.begin() + data_region_start + data_offset,
+                    filedata.begin() + data_region_start + data_offset + data_size
+                ));
+            }else {
+                return false;
+            }
         }
     }
 
@@ -218,12 +218,12 @@ bool bsmlib::Data::Save(std::string fname) {
         tableregion.push_back((uint8_t)key.type);
 
         // Push value / dataregion markers
-        if(key.type == BSM_KEYTYPE_INT){
+        if(key.type == KeyType::Integer){
             tableregion.push_back((uint8_t)((key.value_int & 0x000000FF) >> 0));
             tableregion.push_back((uint8_t)((key.value_int & 0x0000FF00) >> 8));
             tableregion.push_back((uint8_t)((key.value_int & 0x00FF0000) >> 16));
             tableregion.push_back((uint8_t)((key.value_int & 0xFF000000) >> 24));
-        }else if(key.type == BSM_KEYTYPE_FLOAT) {
+        }else if(key.type == KeyType::Float) {
             uint32_t valbytes;
 
             memcpy(&valbytes, &key.value_float, 4);
@@ -232,7 +232,7 @@ bool bsmlib::Data::Save(std::string fname) {
             tableregion.push_back((uint8_t)((valbytes & 0x0000FF00) >> 8));
             tableregion.push_back((uint8_t)((valbytes & 0x00FF0000) >> 16));
             tableregion.push_back((uint8_t)((valbytes & 0xFF000000) >> 24));
-        }else if(key.type == BSM_KEYTYPE_RAW) {
+        }else if(key.type == KeyType::Raw) {
             tableregion.push_back((uint8_t)((dataregion.size() & 0x00FF) >> 0));
             tableregion.push_back((uint8_t)((dataregion.size() & 0xFF00) >> 8));
 
@@ -240,7 +240,7 @@ bool bsmlib::Data::Save(std::string fname) {
             tableregion.push_back((uint8_t)((key.data.size() & 0xFF00) >> 8));
 
             dataregion.insert(dataregion.end(), key.data.begin(), key.data.end());
-        }else if(key.type == BSM_KEYTYPE_STRING) {
+        }else if(key.type == KeyType::String) {
             tableregion.push_back((uint8_t)((dataregion.size() & 0x00FF) >> 0));
             tableregion.push_back((uint8_t)((dataregion.size() & 0xFF00) >> 8));
 
@@ -254,8 +254,8 @@ bool bsmlib::Data::Save(std::string fname) {
     // Write bytes
     file.open(fname, std::ios::out | std::ios::binary);
 
-    file.write((char *)&tableregion[0], tableregion.size());
-    file.write((char *)&dataregion[0], dataregion.size());
+    file.write((char *)(tableregion.data()), tableregion.size());
+    file.write((char *)(dataregion.data()), dataregion.size());
 
     file.close();
 

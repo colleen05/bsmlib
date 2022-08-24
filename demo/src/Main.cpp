@@ -33,16 +33,16 @@ int main() {
         auto &keyvalue = p.second;
 
         switch(keyvalue.type) {
-            case bsmlib::KeyType::BSM_KEYTYPE_INT:
+            case bsmlib::KeyType::Integer:
                 std::cout << "FOUND: (int) test.bsm::" << keyname << " = " << std::to_string(keyvalue.value_int) << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_FLOAT:
+            case bsmlib::KeyType::Float:
                 std::cout << "FOUND: (float) test.bsm::" << keyname << " = " << std::to_string(keyvalue.value_float) << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_STRING:
+            case bsmlib::KeyType::String:
                 std::cout << "FOUND: (string) test.bsm::" << keyname << " = " << keyvalue.value_string << std::endl;
                 break;
-            case bsmlib::KeyType::BSM_KEYTYPE_RAW:
+            case bsmlib::KeyType::Raw:
                 std::cout << "FOUND: (raw) test.bsm::" << keyname << " = " << std::to_string(keyvalue.data.size()) << " bytes." << std::endl;
                 break;
         }

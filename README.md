@@ -30,10 +30,10 @@ int main() {
 	my_data.SetString("my_string", "Hello, world!");
 	my_data.SetRaw("my_raw", data_bytes);
 
-	std::cout << "Int:        " << my_data.GetInt("my_int") 	<< std::endl;
-	std::cout << "Float:      " << my_data.GetFloat("my_float") 	<< std::endl;
-	std::cout << "String:     " << my_data.GetString("my_string") 	<< std::endl;
-	std::cout << "Raw (size): " << my_data.GetRaw("my_raw").size()	<< std::endl;
+	std::cout << "Int:        " << my_data.GetInt("my_int")         << std::endl;
+	std::cout << "Float:      " << my_data.GetFloat("my_float")     << std::endl;
+	std::cout << "String:     " << my_data.GetString("my_string")   << std::endl;
+	std::cout << "Raw (size): " << my_data.GetRaw("my_raw").size()  << std::endl;
 	
 	return 0;
 }
@@ -45,7 +45,7 @@ bsmlib::Data my_data;
 // ...
 my_data.Save("data.bsm");
 ```
-Use `bsmlib::Data::Load(std::string filename)` to load from a file.
+Use `bsmlib::Data::Load(std::string filename, bool clearFirst = true)` to load from a file.
 ```c++
 bsmlib::Data my_data;
 my_data.Load("data.bsm");
@@ -54,8 +54,10 @@ OR, pass a filename as an `std::string` to the constructor to automatically load
 ```c++
 bsmlib::Data my_data("data.bsm");
 ```
+You can also set the `clearFirst` argument to `false` if you would like to append data to the structure from a file, rather than loading the file data as a new structure.
 ### Deleting a key
-Deleting a key is as simple as calling `bsmlib::Data::DeleteKey(std::string filename)`
+Deleting a key is as simple as calling `bsmlib::Data::DeleteKey(std::string filename)`.
+You may also use `bsmlib::Data::ClearKeys()` to delete every key in a structure.
 ### Testing if key exists
 If you want to know if a key exists, call `bsmlib::Data::KeyExists(std::string filename)`. It will return `true` if a key exists by the given name, and `false` if it does not.
 ## BSM file structure

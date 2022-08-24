@@ -26,12 +26,12 @@ BSM File structure
 */
 
 namespace bsmlib {
-    enum KeyType {
-        BSM_KEYTYPE_INT = 0,
-        BSM_KEYTYPE_FLOAT,
-        BSM_KEYTYPE_STRING,
-        BSM_KEYTYPE_RAW,
-        BSM_KEYTYPE_NULL
+    enum class KeyType {
+        Integer = 0,
+        Float,
+        String,
+        Raw,
+        Null
     };
 
     struct Key {
