@@ -45,29 +45,30 @@ namespace bsmlib {
 
     class Data {
         public:
-            std::map<std::string, Key> keys;
+            std::map<std::string, Key> keys;    // Map of keynames to values
 
-            void DeleteKey(std::string keyname);
+            void ClearKeys();                       // Clear all keys in structure
+            void DeleteKey(std::string keyname);    // Delete key by name
 
-            bool KeyExists (std::string keyname);
+            bool KeyExists (std::string keyname);   // Returns true if key exists in structure
 
-            void SetKey     (std::string keyname, Key key);
-            void SetInt     (std::string keyname, int value);
-            void SetFloat   (std::string keyname, float value);
-            void SetString  (std::string keyname, std::string value);
-            void SetRaw     (std::string keyname, std::vector<uint8_t> data);
+            void SetKey     (std::string keyname, Key key);                     // Set key using Key struct
+            void SetInt     (std::string keyname, int value);                   // Set integer by name and value
+            void SetFloat   (std::string keyname, float value);                 // Set float by name and value
+            void SetString  (std::string keyname, std::string value);           // Set string by name and value
+            void SetRaw     (std::string keyname, std::vector<uint8_t> data);   // Set raw by name and value
 
-            Key         GetKey      (std::string keyname);
-            int         GetInt      (std::string keyname);
-            float       GetFloat    (std::string keyname);
-            std::string GetString   (std::string keyname);
+            Key         GetKey      (std::string keyname);  // Get Key structure of key by name
+            int         GetInt      (std::string keyname);  // Get integer value of key by name
+            float       GetFloat    (std::string keyname);  // Get float value of key by name
+            std::string GetString   (std::string keyname);  // Get string value of key by name
 
-            std::vector<uint8_t> GetRaw(std::string keyname);
+            std::vector<uint8_t> GetRaw(std::string keyname);   // Get raw bytes of key
 
-            bool Load(std::string fname);
-            bool Save(std::string fname);
+            bool Load(std::string fname, bool clearFirst = true);   // Load file by name. clearFirst = call ClearKeys() automatically.
+            bool Save(std::string fname);                           // Save structure to file
 
-            Data();
-            Data(std::string fname);
+            Data();                     // Default constructor
+            Data(std::string fname);    // Constructs structure and loads file
     };
 }

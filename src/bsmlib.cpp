@@ -1,5 +1,9 @@
 #include <bsmlib.hpp>
 
+void bsmlib::Data::ClearKeys() {
+    keys.clear();
+}
+
 void bsmlib::Data::DeleteKey(std::string keyname) {
     keys.erase(keyname);
 }
@@ -102,7 +106,9 @@ std::vector<uint8_t> bsmlib::Data::GetRaw(std::string keyname) {
     return std::vector<uint8_t>();
 }
 
-bool bsmlib::Data::Load(std::string fname) {
+bool bsmlib::Data::Load(std::string fname, bool clearFirst) {
+    if(clearFirst) keys.clear();
+
     std::ifstream file;
 
     int data_region_start   = 0,
