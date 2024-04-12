@@ -2,6 +2,11 @@
 **bsmlib** provides functions for loading, modifying, and saving BSM (**B**inary **Sm**all Data) formatted data.
 To include this library, add files from the `include` directory to your include path or linker, and files from the `src` path to your source path.
 To compile as a static library, check the documentation for your compiler (such as [here](https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html) for GCC).
+
+## :warning: :rotating_light: DISCONTINUED C++ PROJECT :rotating_light: :warning:
+I'm no longer using C++ for personal projects, thus this project's development has been discontinued.
+Check my GitHub or [**my website**](https://colleen05.me/) for projects coming in the future.
+
 ## Included demo
 A demo application is available in the `./demo/` directory of this repository, which demonstrates some capabilities of bsmlib. To build this demo, execute `build_demo_linux64.sh` on Linux, or `build_demo_win64.bat` on Windows. This will create an executable in the `./demo/bin/` directory.
 ## File specifications
